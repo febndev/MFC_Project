@@ -8,23 +8,23 @@
     "net8.0-windows7.0": []
   },
   "packageFolders": {
-    "C:\\Users\\ansxodud\\.nuget\\packages\\": {},
+    "C:\\Users\\aiot101\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\CSServer.csproj",
+      "projectUniqueName": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\CSServer.csproj",
       "projectName": "CSServer",
-      "projectPath": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\CSServer.csproj",
-      "packagesPath": "C:\\Users\\ansxodud\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\obj\\",
+      "projectPath": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\CSServer.csproj",
+      "packagesPath": "C:\\Users\\aiot101\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\ansxodud\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\aiot101\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -33,6 +33,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -75,7 +76,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
