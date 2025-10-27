@@ -8,4 +8,17 @@
 "{commit 날짜}, {코드작성자}, {Commit 메시지}"
 
 # 패킷 구조 참고 
-<img width="724" height="595" alt="image" src="https://github.com/user-attachments/assets/4b20cf15-3d37-426b-81c0-270fe04247d8" />
+## 헤더 + 바디 구조로 진행 
+### 헤더 규칙 
+**MSGTYPE** : 메시지 타입, 1 바이트, CHAR
+- 1 : 이미지 전송
+- 2 : 이미지 전송 응답 (잘받았다)
+- 3 : 결과 전송
+- 4 : 결과 전송 응답 (잘받았다)
+
+**BODYLEN** : 이미지 크기(buffer에 할당), 4바이트, INT 
+**IMGID** : 이미지 식별용 ID , 4바이트, INT 
+
+### 바디 규칙 
+- 이미지는 바이너리 데이터로 전송
+- 결과는 0 또는 1 로 전송 : 0 - PASS , 1 - FAIL
