@@ -1,34 +1,34 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\",
+  "WorkspaceRootPath": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|c:\\users\\aiot101\\desktop\\mfcproject\\mfc_project\\csserver\\tcpclienttoserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|solutionrelative:tcpclienttoserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|c:\\users\\ansxodud\\desktop\\mfcproject\\csserver\\csserverform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|solutionrelative:csserverform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|c:\\users\\aiot101\\desktop\\mfcproject\\mfc_project\\csserver\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|c:\\users\\ansxodud\\desktop\\mfcproject\\csserver\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|solutionrelative:server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|c:\\users\\aiot101\\desktop\\mfcproject\\mfc_project\\csserver\\clientsession.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|solutionrelative:clientsession.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|c:\\users\\aiot101\\desktop\\mfcproject\\mfc_project\\csserver\\mainapp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|solutionrelative:mainapp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|c:\\users\\aiot101\\desktop\\mfcproject\\mfc_project\\csserver\\csserverform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|solutionrelative:csserverform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\csserverform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\csserverform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|solutionrelative:csserverform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|c:\\users\\aiot101\\desktop\\mfcproject\\mfc_project\\csserver\\csserverform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|solutionrelative:csserverform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|c:\\users\\ansxodud\\desktop\\mfcproject\\csserver\\tcpclienttoserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|solutionrelative:tcpclienttoserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|c:\\users\\ansxodud\\desktop\\mfcproject\\csserver\\mainapp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|solutionrelative:mainapp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|c:\\users\\ansxodud\\desktop\\mfcproject\\csserver\\clientsession.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|solutionrelative:clientsession.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|c:\\users\\ansxodud\\desktop\\mfcproject\\csserver\\csserverform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0B4B860A-CAEF-41B4-AD97-B1038E5DA097}|CSServer.csproj|solutionrelative:csserverform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -37,108 +37,103 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 200,
+          "DockedWidth": 227,
           "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Server.cs",
-              "DocumentMoniker": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\Server.cs",
-              "RelativeDocumentMoniker": "Server.cs",
-              "ToolTip": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\Server.cs",
-              "RelativeToolTip": "Server.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADcAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-26T04:48:01.628Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "TCPClientToServer.cs",
-              "DocumentMoniker": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\TCPClientToServer.cs",
+              "DocumentMoniker": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\TCPClientToServer.cs",
               "RelativeDocumentMoniker": "TCPClientToServer.cs",
-              "ToolTip": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\TCPClientToServer.cs",
+              "ToolTip": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\TCPClientToServer.cs",
               "RelativeToolTip": "TCPClientToServer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-27T02:21:08.711Z",
               "EditorCaption": ""
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CSServerForm.cs",
+              "DocumentMoniker": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\CSServerForm.cs",
+              "RelativeDocumentMoniker": "CSServerForm.cs",
+              "ToolTip": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\CSServerForm.cs",
+              "RelativeToolTip": "CSServerForm.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-26T04:45:23.188Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "CSServerForm.cs [\uB514\uC790\uC778]",
+              "DocumentMoniker": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\CSServerForm.cs",
+              "RelativeDocumentMoniker": "CSServerForm.cs",
+              "ToolTip": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\CSServerForm.cs [\uB514\uC790\uC778]",
+              "RelativeToolTip": "CSServerForm.cs [\uB514\uC790\uC778]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-26T05:26:35.013Z",
+              "EditorCaption": " [\uB514\uC790\uC778]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MainApp.cs",
+              "DocumentMoniker": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\MainApp.cs",
+              "RelativeDocumentMoniker": "MainApp.cs",
+              "ToolTip": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\MainApp.cs",
+              "RelativeToolTip": "MainApp.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-25T21:24:42.983Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "ClientSession.cs",
-              "DocumentMoniker": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\ClientSession.cs",
+              "DocumentMoniker": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\ClientSession.cs",
               "RelativeDocumentMoniker": "ClientSession.cs",
-              "ToolTip": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\ClientSession.cs",
+              "ToolTip": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\ClientSession.cs",
               "RelativeToolTip": "ClientSession.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAQwB8AAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-26T05:50:32.611Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "CSServerForm.Designer.cs",
-              "DocumentMoniker": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\CSServerForm.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\CSServerForm.Designer.cs",
               "RelativeDocumentMoniker": "CSServerForm.Designer.cs",
-              "ToolTip": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\CSServerForm.Designer.cs",
+              "ToolTip": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\CSServerForm.Designer.cs",
               "RelativeToolTip": "CSServerForm.Designer.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-26T05:32:58.207Z",
               "EditorCaption": ""
-            },
+            }
+          ]
+        },
+        {
+          "DockedWidth": 173,
+          "SelectedChildIndex": 0,
+          "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "CSServerForm.cs [\uB514\uC790\uC778]",
-              "DocumentMoniker": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\CSServerForm.cs",
-              "RelativeDocumentMoniker": "CSServerForm.cs",
-              "ToolTip": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\CSServerForm.cs [\uB514\uC790\uC778]",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\ansxodud\\Desktop\\MFCProject\\CSServer\\CSServerForm.cs [\uB514\uC790\uC778]",
+              "DocumentIndex": 1,
+              "Title": "Server.cs",
+              "DocumentMoniker": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\Server.cs",
+              "RelativeDocumentMoniker": "Server.cs",
+              "ToolTip": "C:\\Users\\ansxodud\\Desktop\\MFCProject\\CSServer\\Server.cs",
+              "RelativeToolTip": "Server.cs",
+              "ViewState": "AgIAACgAAAAAAAAAAAAYwEMAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-26T05:26:35.013Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "CSServerForm.cs",
-              "DocumentMoniker": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\CSServerForm.cs",
-              "RelativeDocumentMoniker": "CSServerForm.cs",
-              "ToolTip": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\CSServerForm.cs",
-              "RelativeToolTip": "CSServerForm.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-26T04:45:23.188Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MainApp.cs",
-              "DocumentMoniker": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\MainApp.cs",
-              "RelativeDocumentMoniker": "MainApp.cs",
-              "ToolTip": "C:\\Users\\aiot101\\Desktop\\MFCProject\\MFC_Project\\CSServer\\MainApp.cs",
-              "RelativeToolTip": "MainApp.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-25T21:24:42.983Z",
+              "WhenOpened": "2025-10-26T04:48:01.628Z",
               "EditorCaption": ""
             }
           ]

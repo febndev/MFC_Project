@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using System.Buffers.Binary;
 
 namespace CSServer
-{
+{   // py서버에 연결하기
     public class TCPClientToServer
     {
-        private IPAddress? _serverIPAddress = IPAddress.Parse("127.0.0.1"); // 서버 IP 주소 
-        private int _serverPort = 23000; // 서버 포트 번호
+        private IPAddress? _serverIPAddress = IPAddress.Parse("127.0.0.1"); // py 서버 IP 주소 
+        private int _serverPort = 7100; // 서버 포트 번호
         private TcpClient? _tcpClient; // 클라 소켓 
 
         public IPAddress? ServerIPAddress => _serverIPAddress;
@@ -51,12 +51,12 @@ namespace CSServer
 
             try
             {   // 검증한 IP, Port 로 서버에 연결 시도
-                await _tcpClient.ConnectAsync(_serverIPAddress, _serverPort);
-                Console.WriteLine($" 서버에 연결되었습니다. {_serverIPAddress}:{_serverPort}");
+                await _tcpClient.ConnectAsync( _serverIPAddress, _serverPort);
+                Console.WriteLine($" py 서버에 연결되었습니다. {_serverIPAddress}:{_serverPort}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($" 서버 연결 오류: {ex.Message}");
+                Console.WriteLine($" py 서버 연결 오류: {ex.Message}");
                 throw;
             }
         }

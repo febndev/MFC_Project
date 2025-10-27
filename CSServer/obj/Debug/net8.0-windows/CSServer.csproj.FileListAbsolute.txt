@@ -31,3 +31,4 @@ C:\Users\aiot101\Desktop\MFCProject\MFC_Project\CSServer\obj\Debug\net8.0-window
 C:\Users\aiot101\Desktop\MFCProject\MFC_Project\CSServer\obj\Debug\net8.0-windows\CSServer.pdb
 C:\Users\aiot101\Desktop\MFCProject\MFC_Project\CSServer\obj\Debug\net8.0-windows\CSServer.genruntimeconfig.cache
 C:\Users\aiot101\Desktop\MFCProject\MFC_Project\CSServer\obj\Debug\net8.0-windows\ref\CSServer.dll
+C:\Users\ansxodud\Desktop\MFCProject\CSServer\obj\Debug\net8.0-windows\CSServer.sourcelink.json
