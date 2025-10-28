@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CSServer
-{
+{ // 서버로서 C++ 클라이언트 연결 수락
     internal class Server
     {
         IPAddress? mIP;
@@ -24,7 +24,7 @@ namespace CSServer
         public async Task StartServerListeningAsync(
             IPAddress? ipaddr = null, 
             int port = 7000,
-            Func<Task>? connectPythonAsync = null //파이썬 연결 콜백
+            ClientToPyServer? pyServer = null
         )
         {
 
@@ -50,37 +50,38 @@ namespace CSServer
                 Console.WriteLine($"Server started on {mIP.ToString()}:{mPort}");
 
                 KeepRunning = true;
-                bool pythonConnected = false; // python 연결을 한번만 하도록 스위치
+                //bool pythonConnected = false; // python 연결을 한번만 하도록 스위치
 
                 while (KeepRunning)
                 {   // 클라이언트 연결 요청 수락, 리스트 추가 
                     TcpClient client = await mTcpListener.AcceptTcpClientAsync();
-                    Console.WriteLine("C++ Client connected.");
+                    Console.WriteLine($"C++ Client connected. IP : {client.Client.RemoteEndPoint}");
                     CppClients.Add(client);
 
-                    if(!pythonConnected) {
-                        pythonConnected = true;
-                        // python 서버로 연결요청 
-                        if (connectPythonAsync != null)
-                        {
-                            _ = Task.Run(async () =>
-                            {
-                                try 
-                                { 
-                                    await connectPythonAsync(); 
-                                }
-                                catch (Exception ex) { 
-                                    Console.WriteLine("[PY] connect FAIL: " + ex.Message);
-                                    pythonConnected = false;
-                                }
-                            });
-                        }
-                    }
+                    // 클라이언트 세션(파싱) 시작 및 파이썬 서버 연결 
+                    _ = Task.Run(() => new ClientSession(client, pyServer).ManageClientAsync());
+                    //if (!pythonConnected) {
+                    //    pythonConnected = true;
+                    //    // python 서버로 연결요청 
+                    //    if (connectPythonAsync != null)
+                    //    {
+                    //        _ = Task.Run(async () =>
+                    //        {
+                    //            try 
+                    //            { 
+                    //                await connectPythonAsync(); 
+                    //            }
+                    //            catch (Exception ex) { 
+                    //                Console.WriteLine("[PY] connect FAIL: " + ex.Message);
+                    //                pythonConnected = false;
+                    //            }
+                    //        });
+                    //    }
+                    //}
 
                     // 파싱 로직 
-                    _ = Task.Run(() => new ClientSession(client).ManageClientAsync());
+                    //_ = Task.Run(() => new ClientSession(client).ManageClientAsync());
                 }
-                
             }
             catch (IOException)
             {

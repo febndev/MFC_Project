@@ -8,13 +8,13 @@ namespace CSServer
     public partial class CSServerForm : Form
     {
         Server mServer;
-        TCPClientToServer pyClient;
+        ClientToPyServer pyClient;
 
         public CSServerForm()
         {
             InitializeComponent();
             mServer = new Server();
-            pyClient = new TCPClientToServer();
+            pyClient = new ClientToPyServer();
         }
 
         private async void btnAcceptClient_Click(object sender, EventArgs e)
@@ -22,7 +22,7 @@ namespace CSServer
             await mServer.StartServerListeningAsync(
                 ipaddr: IPAddress.Any,
                 port : 7000,
-                connectPythonAsync: () => pyClient.ConnectToServerAsync()
+                pyServer : pyClient
             );
         }
     }
