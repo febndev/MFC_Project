@@ -1,0 +1,70 @@
+# ===== Visual Studio (IDE) =====
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ===== Build outputs (C++/MFC) =====
+Debug*/
+Release*/
+x64/
+x86/
+ARM*/
+ARM64/
+[Bb]in/
+[Oo]bj/
+out/
+build/
+
+# ===== CMake (사용 시) =====
+CMakeFiles/
+cmake-build-*/
+CMakeCache.txt
+
+# ===== C/C++ intermediates =====
+*.iobj
+*.pch
+*.ipch
+ipch/
+*.pdb
+*.idb
+*.ilk
+*.exp
+*.sbr
+*.bsc
+*.rsp
+*.tmp
+*.tlog
+*.lastbuildstate
+*.cache
+*.opendb
+*.VC.db
+*.VC.VC.opendb
+*.opensdf
+*.sdf
+
+# ===== MFC/Resource artifacts =====
+*.aps        # MFC 리소스 편집기 임시파일
+*.rc.user    # 사용자별 리소스 설정
+
+# ===== Logs / Diagnostics =====
+*.log
+*.dmp
+TestResults/
+*.trx
+
+# ===== NuGet (optional) =====
+packages/
+!packages/build/
+!packages/repositories.config
+*.nupkg
+project.lock.json
+*.nuget.props
+*.nuget.targets
+
+# ===== OS/editor noise =====
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.swp
