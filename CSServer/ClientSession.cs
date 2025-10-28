@@ -31,16 +31,12 @@ namespace CSServer
             {
                 cppStream = cppClient.GetStream();
                 pyStream = await pyServer.ConnectToPyServerAsync();
-                //reader = new StreamReader(stream);
-                while (true)
-                {
-                    var (msgType, imgId, body) = await ReceiveOnePacketAsync(cppStream, pyStream);
-                    //Console.WriteLine($"MsgType={msgType}, ImgId={imgId}, BodyLen={body.Length}"); 
-                
-                
-                
-                
-                }
+
+                var cppToPy = PacketRelayLoop("Cpp to Py", cppStream, pyStream);
+                var pyToCpp = PacketRelayLoop("Py to Cpp", pyStream, cppStream);
+
+                // 한쪽 종료/에러 감지만 함. 자꾸 넣으라고 강요해서 일단 주석으로 넣음.
+                //await Task.WhenAny(cppToPy, pyToCpp);
             }
             catch (Exception ex)
             {
@@ -51,49 +47,150 @@ namespace CSServer
         }
 
         // 매개변수 만큼 읽어내는 메서드 
-        public static async Task ReadExactlyAsync(NetworkStream cppStream, byte[] buf, int count)
+        public static async Task ReadExactlyAsync(NetworkStream stream, byte[] buf, int count)
         {
             int off = 0;
             while (off < count)
             {
-                int n = await cppStream.ReadAsync(buf, off, count - off);
+                int n = await stream.ReadAsync(buf, off, count - off);
                 if (n == 0) throw new EndOfStreamException("remote closed during read");
 
                 off += n;
             }
-            // void 로 하던지 아니면 Task 로 해야되나
         }
 
-        // 패킷 파싱하고 복사 후 파이썬 서버로 전송
-        static async Task<(int msgType, uint imgId, byte[] body)> ReceiveOnePacketAsync(NetworkStream cppStream, NetworkStream pyStream)
+        // 패킷 분석해서 상대방으로 보내는 것 까지 
+        private async Task PacketRelayLoop(string tag, NetworkStream stream, NetworkStream dstStream)
         {
             // 1) 헤더 9바이트
             byte[] header = new byte[9];
-            await ReadExactlyAsync(cppStream, header, 9);
-            // Console.WriteLine($"HDR={BitConverter.ToString(header)}");
+            try
+            {
+                while (true)
+                {
+                    await ReadExactlyAsync(stream, header, 9);
 
-            // 2) 파싱 (바이너리 데이터 파싱, 리틀엔디안으로 변경시 ReadUInt32LittleEndian으로 변경 )
-            int msgType = header[0];
-            uint bodyLen = BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(1, 4));
-            uint imgId = BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(5, 4));
-            Console.WriteLine($"[ReceiveOnePacketAsync] msgType={msgType}, bodyLen={bodyLen}, imgId={imgId}");
-            // 3) 바디 버퍼를 "딱 그 크기"로 만들고 채우기
-            byte[] body = new byte[bodyLen];
-            await ReadExactlyAsync(cppStream, body, (int)bodyLen);
+                    // 2) 파싱 (바이너리 데이터 파싱, 빅엔디안->리틀엔디안으로 변경 )
+                    int msgType = header[0];
+                    uint bodyLen = BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(1, 4));
+                    // 바디 상한 + 안전 캐스팅, 이것도 자꾸 강요해서 주석으로 일단 넣음. 
+                    //const int MaxBodyLen = 10 * 1024 * 1024;
+                    //if (bodyLen > MaxBodyLen) throw new InvalidDataException("Body too large");
+                    int bodySize = checked((int)bodyLen);
+                    uint imgId = BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(5, 4));
+                    Console.WriteLine($"[ReceiveOnePacketAsync] msgType={msgType}, bodyLen={bodyLen}, imgId={imgId}");
 
-            //// 4) "헤더+바디"를 담을 1개짜리 연속 버퍼 만들기
-            //byte[] packet = new byte[9 + bodyLen];
-            //Buffer.BlockCopy(header, 0, packet, 0, 9);
-            //Buffer.BlockCopy(body, 0, packet, 9, (int)bodyLen);
+                    byte[] body = bodySize == 0 ? Array.Empty<byte>() : new byte[bodySize];
+                    if (bodySize > 0)
+                        await ReadExactlyAsync(stream, body, bodySize);
 
-            // 6) 단 한 번에 전송
-            await SendToPythonSingleAsync(pyStream, header, body);
+                    /* 이렇게 썼는데 밑에 switch문에서 body가 null일 수 있다면서 에러떠서 위처럼 선언과 동시에 삼항연산으로
+                     조건따져서 초기화까지 하는 코드로 바꿈. 
+                    byte[] body;
+                    if (bodySize > 0)
+                    {
+                        body = new byte[bodySize];
+                        await ReadExactlyAsync(stream, body, bodySize);
 
-            return (msgType, imgId, body);
+                    }
+                    else if(bodySize >0)
+                    {
+                        Array.Empty<byte>();
+                    }
+                    */
+
+                    // 3) msgType에 따른 분기처리
+                    switch ((MsgType)msgType) // 메시지 열거형으로 캐스팅 후 분기
+                    {
+                        case MsgType.Image:
+                            Console.WriteLine($"{tag} type={msgType} len={bodyLen} id={imgId}");
+                        
+                            await SendToDestinationAsync(dstStream, header, body);
+                            // 파일로 서버 컴퓨터에 저장 
+
+                            // 1) 목적지로 그대로 중계
+                            await SendToDestinationAsync(dstStream, header, body);
+
+                            // 2) 디스크에 저장 (폴더 자동 생성)
+                            try
+                            {
+                                var dir = Path.Combine(AppContext.BaseDirectory, "recv_img");
+                                Directory.CreateDirectory(dir); // 없으면 생성
+                                var ext = ".jpg";               // JPG/PNG라면 ".jpg" 또는 ".png"로 바꿔도 됨, 원래는 ".bin"
+                                var path = Path.Combine(dir, $"{imgId}_{DateTime.Now:yyyyMMdd_HHmmssfff}{ext}");
+
+                                await File.WriteAllBytesAsync(path, body);
+                                Console.WriteLine($"[SAVE] {path} ({body.Length} bytes)");
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine($"[SAVE] 실패: {e.Message}");
+                            }
+
+                            await SendAckAsync(stream, MsgType.ImageReceive, imgId);
+                            break;
+
+                        case MsgType.ImageReceive:
+                            break;
+
+                        case MsgType.Result:
+                            Console.WriteLine($"{tag} type={msgType} len={bodyLen} id={imgId}");
+                            // 잘 받았다고 파이썬에 응답 보내기 추가해야함. 
+                            await SendToDestinationAsync(dstStream, header, body);
+                            await SendAckAsync(stream, MsgType.ResultReceive, imgId);
+                            break;
+
+                        case MsgType.ResultReceive:
+                            break;
+
+                        default:
+                            // 분류되지 않은 MSGTYPE 도 일단 목적지까지 전달은 함. 
+                            await SendToDestinationAsync(dstStream, header, body);
+                            break;
+
+                    }
+
+
+
+                }
+            }
+            // 예외처리 
+
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine($"[{tag}] 취소됨 (앱/세션 종료 요청).");
+            }
+            catch (InvalidDataException ex)
+            {
+                Console.WriteLine($"[{tag}] 잘못된 패킷: {ex.Message}");
+            }
+            catch (IOException ex) // 읽기/쓰기 중 소켓 끊김 등
+            {
+                // NetworkStream 예외는 대부분 IOException으로 오고,
+                // 내부에 SocketException이 들어있는 경우가 많아요.
+                if (ex.InnerException is SocketException se)
+                {
+                    Console.WriteLine($"[{tag}] 소켓 오류({se.SocketErrorCode}): {se.Message}");
+                }
+                else
+                {
+                    Console.WriteLine($"[{tag}] I/O 오류: {ex.Message}");
+                }
+            }
+            catch (ObjectDisposedException)
+            {
+                Console.WriteLine($"[{tag}] 스트림이 이미 닫혔습니다.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[{tag}] 예상치 못한 오류: {ex}");
+            }
+
         }
 
-        // 파이썬 서버로 중계 
-        static async Task SendToPythonSingleAsync(NetworkStream pyStream, byte[] header, byte[] body)
+
+        // 목적지로 중계 
+        static async Task SendToDestinationAsync(NetworkStream dstStream, byte[] header, byte[] body)
         {
             // 예외처리 헤더가 9바이트인지 확인 
             if (header == null || header.Length != 9)
@@ -104,8 +201,33 @@ namespace CSServer
             if (body.Length > 0)
                 Buffer.BlockCopy(body, 0, packet, 9, body.Length);
             Console.WriteLine("서버로 패킷 전송 시도");
-            await pyStream.WriteAsync(packet, 0, packet.Length);
+            await dstStream.WriteAsync(packet, 0, packet.Length);
         }
 
+        // 응답 보내기 함수
+        private static async Task SendAckAsync(NetworkStream stream, MsgType ackType, uint imgId)
+        {
+            byte[] hdr = new byte[9];
+            if (ackType == MsgType.ImageReceive)
+            {
+                hdr[0] = (byte)'2';
+            } else if (ackType == MsgType.ResultReceive)
+            {
+                hdr[0] = (byte)'4';
+            }
+                // hdr[0] = (byte)ackType;
+            BinaryPrimitives.WriteUInt32BigEndian(hdr.AsSpan(1, 4), 0); // bodylen=0
+            BinaryPrimitives.WriteUInt32BigEndian(hdr.AsSpan(5, 4), imgId);
+            await stream.WriteAsync(hdr, 0, hdr.Length);
+        }
     }
+
+    public enum MsgType : byte
+    {
+        Image = 1, // 이미지 전송
+        ImageReceive = 2, // 이미지 잘 받았다
+        Result = 3, // 검출결과
+        ResultReceive = 4, // 결과 잘 받았다
+    }
+
 }

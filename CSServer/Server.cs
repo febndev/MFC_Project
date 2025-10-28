@@ -60,27 +60,7 @@ namespace CSServer
 
                     // 클라이언트 세션(파싱) 시작 및 파이썬 서버 연결 
                     _ = Task.Run(() => new ClientSession(client, pyServer).ManageClientAsync());
-                    //if (!pythonConnected) {
-                    //    pythonConnected = true;
-                    //    // python 서버로 연결요청 
-                    //    if (connectPythonAsync != null)
-                    //    {
-                    //        _ = Task.Run(async () =>
-                    //        {
-                    //            try 
-                    //            { 
-                    //                await connectPythonAsync(); 
-                    //            }
-                    //            catch (Exception ex) { 
-                    //                Console.WriteLine("[PY] connect FAIL: " + ex.Message);
-                    //                pythonConnected = false;
-                    //            }
-                    //        });
-                    //    }
-                    //}
 
-                    // 파싱 로직 
-                    //_ = Task.Run(() => new ClientSession(client).ManageClientAsync());
                 }
             }
             catch (IOException)
