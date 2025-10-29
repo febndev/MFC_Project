@@ -49,4 +49,7 @@ private:
     // ★ 상태 라벨 갱신 헬퍼
     void UpdateInfoLabel(bool connected);
     void ResetFpsCounters();
+
+public:
+    const cv::Mat& GetFrame() const { return m_frame; }
 };

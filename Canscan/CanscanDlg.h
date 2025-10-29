@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CTabDashboard.h"
 #include "CTabCam.h"
+#include "Packet.h"
 #include <opencv2/opencv.hpp>
 
 // CCanscanDlg 대화 상자
@@ -8,6 +9,7 @@ class CCanscanDlg : public CDialogEx
 {
 public:
     CCanscanDlg(CWnd* pParent = nullptr);
+    void OnDestroy();
 
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_CANSCAN_DIALOG };
@@ -35,10 +37,23 @@ public:
     // 프레임 갱신 & Mat → HBITMAP (분리 유지)
     void UpdateFrame(const cv::Mat& frame);
     HBITMAP MatToHBITMAP(const cv::Mat& mat);
+    // 네트워크
+    bool IsConnected() const { return m_isConnected; }
+    bool m_isConnected = false;
+    Packet& GetPacket() { return m_packet; }
+    // Camera 탭 접근용 getter
+    CTabCam& GetTabCam() { return m_tabCam; }
+
+    std::vector<uint8_t> m_lastSentImage;
+
+    void SetWaitingForImgRes(bool flag) { m_waitingForImgRes = flag; }
+    bool IsWaitingForImgRes() const { return m_waitingForImgRes; }
 
 private:
+    Packet m_packet;
     HICON       m_hIcon;
     CTabCtrl    m_tabMain;
     CTabDashboard m_tabDashboard;
     CTabCam       m_tabCam;
+    bool m_waitingForImgRes = false;
 };

@@ -100,10 +100,28 @@ void CTabCam::OnBnClickedBtnClose()
     KillTimer(1);
     m_camera.Close();
 
-    int sel = m_ListCam.GetNextItem(-1, LVNI_SELECTED);
-    if (sel >= 0) m_ListCam.SetItemText(sel, 3, L"Closed");
+    // 🔹 검은 화면 초기화 (CanscanDlg의 MatToHBITMAP 활용)
+    {
+        cv::Mat black(480, 640, CV_8UC3, cv::Scalar(0, 0, 0));
 
-    UpdateInfoLabel(false);          // ★ 종료됨
+        // 부모 다이얼로그(CCanscanDlg) 가져오기
+        CCanscanDlg* pParent = (CCanscanDlg*)GetParent();
+        if (pParent)
+        {
+            HBITMAP hBmp = pParent->MatToHBITMAP(black);
+            CStatic* pic = (CStatic*)GetDlgItem(IDC_PICTURE_CAM);
+            if (pic && hBmp)
+                pic->SetBitmap(hBmp);
+        }
+    }
+
+    // 🔹 리스트 상태 "Closed"로 변경
+    int sel = m_ListCam.GetNextItem(-1, LVNI_SELECTED);
+    if (sel >= 0)
+        m_ListCam.SetItemText(sel, 3, L"Closed");
+
+    // 🔹 상태 표시 갱신
+    UpdateInfoLabel(false);
     SetTextToControl(IDC_STATIC_FPS, L"- fps");
 }
 

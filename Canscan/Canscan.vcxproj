@@ -189,9 +189,11 @@
     <ClInclude Include="CameraManager.h" />
     <ClInclude Include="Canscan.h" />
     <ClInclude Include="CanscanDlg.h" />
+    <ClInclude Include="CommonProtocol.h" />
     <ClInclude Include="CTabCam.h" />
     <ClInclude Include="CTabDashboard.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Packet.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -202,6 +204,7 @@
     <ClCompile Include="CanscanDlg.cpp" />
     <ClCompile Include="CTabCam.cpp" />
     <ClCompile Include="CTabDashboard.cpp" />
+    <ClCompile Include="Packet.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

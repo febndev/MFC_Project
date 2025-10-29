@@ -25,9 +25,27 @@ CCanscanDlg::CCanscanDlg(CWnd* pParent)
 {
     m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
+void CCanscanDlg::OnDestroy()
+{
+    CDialogEx::OnDestroy();
+
+    if (m_isConnected) {
+        m_packet.Disconnect();
+        m_isConnected = false;
+    }
+}
+
 
 void CCanscanDlg::DoDataExchange(CDataExchange* pDX)
 {
+    // 디버그용 콘솔, 모두 구현 후 삭제할 것
+#ifdef _DEBUG
+    AllocConsole();
+    FILE* fp;
+    freopen_s(&fp, "CONOUT$", "w", stdout);
+    freopen_s(&fp, "CONOUT$", "w", stderr);
+#endif
+
     CDialogEx::DoDataExchange(pDX);
     // 탭 컨트롤 ID는 반드시 "IDC_TAB_MAIN" 이어야 함 (리소스 확인!)
     DDX_Control(pDX, IDC_TAB_MAIN, m_tabMain);
@@ -70,6 +88,89 @@ BOOL CCanscanDlg::OnInitDialog()
         CStatic* pic = (CStatic*)GetDlgItem(IDC_PICTURE_CAM);
         if (pic && hBmp) pic->SetBitmap(hBmp);
     }
+
+    if (m_packet.Connect("10.10.21.101", 7000)) {
+        m_isConnected = true;
+        AfxMessageBox(L"서버 연결 성공");
+    }
+    else {
+        m_isConnected = false;
+        AfxMessageBox(L"서버 연결 실패");
+    }
+
+    // ===================== 수신 스레드 =====================
+    std::thread([this] {
+        MsgType type;
+        uint32_t imgId;
+        std::vector<uint8_t> body;
+        ULONGLONG lastSendTick = GetTickCount64();
+        const DWORD TIMEOUT_MS = 10000; // 10초
+        bool waitingForImgRes = false;
+
+        while (m_isConnected)
+        {
+            // 1) 수신 시도 (blocking)
+            if (m_packet.Receive(type, imgId, body))
+            {
+                switch (type)
+                {
+                case MsgType::IMG_RES:
+                    std::cout << "[RECV][IMG_RES] 이미지 결과 수신 완료 (ID=" << imgId << ")\n";
+                    waitingForImgRes = false;
+                    break;
+
+                case MsgType::RESULT_REQ:
+                {
+                    if (!body.empty()) {
+                        uint8_t val = body[0];
+                        std::cout << "[RECV][RESULT_REQ] 서버 결과 값: " << (int)val << std::endl;
+
+                        if (val == 1)
+                            std::cout << "검사 결과: FAIL" << std::endl;
+                        else if (val == 0)
+                            std::cout << "검사 결과: PASS" << std::endl;
+                        else
+                            std::cout << "알 수 없는 결과 코드" << std::endl;
+                    }
+                    else {
+                        std::cout << "[RECV][RESULT_REQ] Body가 비어 있음!" << std::endl;
+                    }
+
+                    // 2) 잘 받았다고 응답 (RESULT_RES)
+                    std::string ackMsg = "ACK:" + std::to_string(imgId);
+                    std::vector<uint8_t> ackBody(ackMsg.begin(), ackMsg.end());
+                    m_packet.Send(MsgType::RESULT_RES, ackBody);
+                    std::cout << "[SEND][RESULT_RES] ACK 전송 완료\n";
+                    break;
+                }
+
+                default:
+                    std::cout << "[RECV] Unknown MsgType=" << (int)type << " (" << body.size() << " bytes)" << std::endl;
+                    break;
+                }
+            }
+            else
+            {
+                // recv 실패 시, 소켓이 닫혔거나 일시적 오류일 수 있음
+                Sleep(10);
+            }
+
+            // 3) IMG_RES 10초 타임아웃 체크
+            if (waitingForImgRes && GetTickCount64() - lastSendTick >= TIMEOUT_MS)
+            {
+                std::cout << "[WARN] 10초 내 IMG_RES 미수신 → 재전송\n";
+
+                // 이 부분은 다시 보내고 싶은 이미지 버퍼를 저장해둔 곳에서 재전송해야 함
+                if (!m_lastSentImage.empty())
+                {
+                    m_packet.Send(MsgType::IMG_REQ, m_lastSentImage);
+                    lastSendTick = GetTickCount64();
+                }
+            }
+        }
+
+        std::cout << "[INFO] 수신 스레드 종료됨." << std::endl;
+        }).detach();
 
     return TRUE;
 }

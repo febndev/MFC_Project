@@ -7,6 +7,11 @@
 #ifndef PCH_H
 #define PCH_H
 
+#define _WINSOCK_DEPRECATED_NO_WARNINGS     // 과거 WinSock API 경고 메시지 제거
+#include <winsock2.h>                       // Windows 네트워크 헤더
+#include <ws2tcpip.h>                       // inet_pton, inet_ntop 제공
+#pragma comment(lib, "ws2_32.lib")
+
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "framework.h"
 
