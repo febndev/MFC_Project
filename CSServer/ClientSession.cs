@@ -105,7 +105,7 @@ namespace CSServer
                         case MsgType.Image:
                             Console.WriteLine($"{tag} type={msgType} len={bodyLen} id={imgId}");
                         
-                            await SendToDestinationAsync(dstStream, header, body);
+                            // await SendToDestinationAsync(dstStream, header, body);
                             // 파일로 서버 컴퓨터에 저장 
 
                             // 1) 목적지로 그대로 중계
@@ -113,7 +113,7 @@ namespace CSServer
 
                             // 2) 디스크에 저장 (폴더 자동 생성)
                             try
-                            {
+                            {   // 이미지 저장 로직 , 경로생성 
                                 var dir = Path.Combine(AppContext.BaseDirectory, "recv_img");
                                 Directory.CreateDirectory(dir); // 없으면 생성
                                 var ext = ".jpg";               // JPG/PNG라면 ".jpg" 또는 ".png"로 바꿔도 됨, 원래는 ".bin"
@@ -131,6 +131,7 @@ namespace CSServer
                             break;
 
                         case MsgType.ImageReceive:
+                            Console.WriteLine($"{tag} type={msgType} len={bodyLen} id={imgId}");
                             break;
 
                         case MsgType.Result:
@@ -141,9 +142,11 @@ namespace CSServer
                             break;
 
                         case MsgType.ResultReceive:
+                            Console.WriteLine($"{tag} type={msgType} len={bodyLen} id={imgId}");
                             break;
 
                         default:
+                            Console.WriteLine($"{tag} type={msgType} len={bodyLen} id={imgId}");
                             // 분류되지 않은 MSGTYPE 도 일단 목적지까지 전달은 함. 
                             await SendToDestinationAsync(dstStream, header, body);
                             break;
@@ -210,15 +213,16 @@ namespace CSServer
             byte[] hdr = new byte[9];
             if (ackType == MsgType.ImageReceive)
             {
-                hdr[0] = (byte)'2';
+                hdr[0] = (byte)2;
             } else if (ackType == MsgType.ResultReceive)
             {
-                hdr[0] = (byte)'4';
+                hdr[0] = (byte)4;
             }
                 // hdr[0] = (byte)ackType;
-            BinaryPrimitives.WriteUInt32BigEndian(hdr.AsSpan(1, 4), 0); // bodylen=0
-            BinaryPrimitives.WriteUInt32BigEndian(hdr.AsSpan(5, 4), imgId);
+            BinaryPrimitives.WriteUInt32LittleEndian(hdr.AsSpan(1, 4), 0); // bodylen=0
+            BinaryPrimitives.WriteUInt32LittleEndian(hdr.AsSpan(5, 4), imgId);
             await stream.WriteAsync(hdr, 0, hdr.Length);
+            Console.WriteLine($"잘받았다 응답 {ackType}전송"); // 
         }
     }
 
