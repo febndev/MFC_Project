@@ -32,4 +32,12 @@
 ### : 프로젝트 -> 속성 -> C/C++ -> 일반 -> 추가 포함 디렉터리 : $(PYLON_DEV_DIR)\include;%OPEN_CV%\include\opencv2;%OPEN_CV%\include;%(AdditionalIncludeDirectories)
 ### : 프로젝트 -> 속성 -> 링커 -> 일반 -> 추가 라이브러리 디렉터리 : $(PYLON_DEV_DIR)\lib\x64;%OPEN_CV%\x64\vc16\lib;%(AdditionalLibraryDirectories)
 ### : 프로젝트 -> 속성 -> 링커 -> 입력 -> 추가 종속성 : opencv_world490.lib;opencv_world490d.lib
-     
+
+# C# Server 실행시 점검 사항 
+## 1. DB 관련 설정 확인 
+- MySQL 용 NuGet 패키지 설치 : Visual Studio에서 프로젝트 - NuGet 패키지 관리 - MySQL.Data 설치 
+- Db.cs 파일 내 Db 클래스 - CreateDefault 메서드의 접속 정보 확인
+## 2. Py Server 접속 정보 확인 
+- ClientToPyServer.cs 내 멤버변수 _pyServerIPAddress , _pyServerPort 값 확인
+## 3. C# 서버 포트정보 확인 
+- Server.cs 내 StartServerListeningAsync 메서드 확인 port 값과 서버 실행할 컴퓨터의 IP주소를 C++클라이언트에 알려주기
