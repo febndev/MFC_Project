@@ -12,7 +12,7 @@
 #define IDC_STATIC_FPS                  1000
 #define IDC_PICTURE_CAM                 1001
 #define IDC_STATIC_INFO                 1003
-#define IDD_TAB_MAIN                    1005
+#define IDC_TAB_MAIN                    1005
 #define IDC_STATIC_RESULT               1006
 #define IDC_RESULT                      1007
 #define IDC_STATIC_PRODUCT              1008
