@@ -11,11 +11,13 @@ namespace CSServer
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static async Task Main()
         {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+            await Db.Global.EnsureTableAsync();
+            Console.WriteLine("DB ¡ÿ∫Ò OK");
             Application.Run(new CSServerForm());
         }
     }

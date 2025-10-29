@@ -116,11 +116,12 @@ namespace CSServer
                             {   // 이미지 저장 로직 , 경로생성 
                                 var dir = Path.Combine(AppContext.BaseDirectory, "recv_img");
                                 Directory.CreateDirectory(dir); // 없으면 생성
-                                var ext = ".jpg";               // JPG/PNG라면 ".jpg" 또는 ".png"로 바꿔도 됨, 원래는 ".bin"
+                                var ext = ".png";               // JPG/PNG라면 ".jpg" 또는 ".png"로 바꿔도 됨, 원래는 ".bin"
                                 var path = Path.Combine(dir, $"{imgId}_{DateTime.Now:yyyyMMdd_HHmmssfff}{ext}");
 
                                 await File.WriteAllBytesAsync(path, body);
                                 Console.WriteLine($"[SAVE] {path} ({body.Length} bytes)");
+                                await Db.Global.InsertImageAsync((int)imgId, path);
                             }
                             catch (Exception e)
                             {
@@ -136,9 +137,23 @@ namespace CSServer
 
                         case MsgType.Result:
                             Console.WriteLine($"{tag} type={msgType} len={bodyLen} id={imgId}");
-                            // 잘 받았다고 파이썬에 응답 보내기 추가해야함. 
+                            // C++ 클라로 패킷 중계 
                             await SendToDestinationAsync(dstStream, header, body);
+                            // Py 서버로 잘 받았다 보내기 
                             await SendAckAsync(stream, MsgType.ResultReceive, imgId);
+                            // DB에 결과 업데이트
+                            int intImgId = (int)imgId;
+                            int intBody = body[0];
+                            bool result = false;
+                            if (intBody == 0)
+                            {
+                                result = true;
+                            }
+                            else if (intBody == 1)
+                            {
+                                result = false;
+                            }
+                                await Db.Global.UpdateResultAsync(intImgId, result);
                             break;
 
                         case MsgType.ResultReceive:
