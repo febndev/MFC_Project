@@ -89,8 +89,9 @@ bool Packet::Send(MsgType type, const std::vector<uint8_t>& body)
     PacketHeader header{};
     header.msgType = static_cast<uint8_t>(type);
     header.bodyLen = static_cast<uint32_t>(body.size());
-    header.imgId = nextImgId.fetch_add(1); // 자동 1씩 증가
-
+    header.imgId = (type == MsgType::IMG_REQ)
+        ? nextImgId.fetch_add(1) // 자동 1씩 증가
+        : 0;
     // ---- Step 1: Header(9Byte)
     if (!sendAll(&header, sizeof(header)))
         return false;
