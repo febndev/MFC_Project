@@ -15,16 +15,17 @@ namespace CSServer
         int mPort;
         TcpListener? mTcpListener;
         // 클라이언트 리스트
-        public List<TcpClient> CppClients { get; } = new(); 
+        // public List<TcpClient> CppClients { get; } = new(); 
 
         public bool KeepRunning { get; set; } = false;
 
         public Server() { }
 
         public async Task StartServerListeningAsync(
-            IPAddress? ipaddr = null, 
-            int port = 7000,
-            ClientToPyServer? pyServer = null
+            IPAddress? ipaddr, 
+            int port,
+            string pyIp, 
+            int pyPort
         )
         {
 
@@ -50,16 +51,15 @@ namespace CSServer
                 Console.WriteLine($"Server started on {mIP.ToString()}:{mPort}");
 
                 KeepRunning = true;
-                //bool pythonConnected = false; // python 연결을 한번만 하도록 스위치
 
                 while (KeepRunning)
                 {   // 클라이언트 연결 요청 수락, 리스트 추가 
                     TcpClient client = await mTcpListener.AcceptTcpClientAsync();
                     Console.WriteLine($"C++ Client connected. IP : {client.Client.RemoteEndPoint}");
-                    CppClients.Add(client);
+            
 
-                    // 클라이언트 세션(파싱) 시작 및 파이썬 서버 연결 
-                    _ = Task.Run(() => new ClientSession(client, pyServer).ManageClientAsync());
+                    // 클라이언트 세션(파싱) 시작 및 자동으로 파이썬 서버 연결 
+                    _ = Task.Run(() => new ClientSession(client, pyIp, pyPort).ManageClientAsync());
 
                 }
             }
@@ -76,7 +76,11 @@ namespace CSServer
                 Console.WriteLine($"AcceptLoop 오류 : {ex.Message}");
             }
         }
-
+        public void Stop()
+        {
+            KeepRunning = false;
+            try { mTcpListener?.Stop(); } catch { }
+        }
 
     }
 }

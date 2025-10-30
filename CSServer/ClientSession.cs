@@ -14,12 +14,15 @@ namespace CSServer
     internal class ClientSession
     {
         private readonly TcpClient cppClient;
-        private readonly ClientToPyServer pyServer;
+        //private readonly ClientToPyServer pyServer;
+        private readonly string pyIp;
+        private readonly int pyPort;
 
-        public ClientSession(TcpClient client, ClientToPyServer pyServerClient)
+        public ClientSession(TcpClient cppclient, string pyIp, int pyPort)
         {
-            cppClient = client;
-            pyServer = pyServerClient;
+            this.cppClient = cppclient;
+            this.pyIp = pyIp;
+            this.pyPort = pyPort;
         }
 
         public async Task ManageClientAsync()
@@ -27,32 +30,58 @@ namespace CSServer
             NetworkStream? cppStream = null;
             // StreamReader? reader = null;
             NetworkStream? pyStream = null;
+            // 파이썬과 다중 연결을 위한 코드 추가 
+            TcpClient pyConn = null;
+            var cts = new CancellationTokenSource();
+
             try
             {
                 cppStream = cppClient.GetStream();
-                pyStream = await pyServer.ConnectToPyServerAsync();
 
-                var cppToPy = PacketRelayLoop("Cpp to Py", cppStream, pyStream);
-                var pyToCpp = PacketRelayLoop("Py to Cpp", pyStream, cppStream);
+                // 세션 전용 파이썬 연결
+                pyConn = new TcpClient();
+                await pyConn.ConnectAsync(pyIp, pyPort);
+                pyStream = pyConn.GetStream();
+                Console.WriteLine($"[ClientSession] 파이썬 서버에 연결되었습니다. {pyIp}:{pyPort}");
+                //pyStream = await pyServer.ConnectToPyServerAsync();
+
+                // 양방향 패킷 중계 시작
+                var cppToPy = PacketRelayLoop("Cpp to Py", cppStream, pyStream, cts.Token);
+                var pyToCpp = PacketRelayLoop("Py to Cpp", pyStream, cppStream, cts.Token);
 
                 // 한쪽 종료/에러 감지만 함.
-                //await Task.WhenAny(cppToPy, pyToCpp);
+                await Task.WhenAny(cppToPy, pyToCpp);
+                cts.Cancel();
+                await Task.WhenAll(Suppress(cppToPy), Suppress(pyToCpp));
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[ClientSession] 오류: {ex.Message}");
                 throw;
             }
+            finally
+            {
+                try { cppStream?.Close(); } catch { }
+                try { pyStream?.Close(); } catch { }
+                try { pyConn?.Close(); } catch { }
+                try { cppClient?.Close(); } catch { }
+                Console.WriteLine("[SES] Closed.");
+            }
 
         }
 
+        private static async Task Suppress(Task t)
+        {
+            try { await t; } catch { }
+        }
+
         // 매개변수 만큼 읽어내는 메서드 
-        public static async Task ReadExactlyAsync(NetworkStream stream, byte[] buf, int count)
+        public static async Task ReadExactlyAsync(NetworkStream stream, byte[] buf, int count, CancellationToken ct)
         {
             int off = 0;
             while (off < count)
             {
-                int n = await stream.ReadAsync(buf, off, count - off);
+                int n = await stream.ReadAsync(buf.AsMemory(off, count - off), ct);
                 if (n == 0) throw new EndOfStreamException("remote closed during read");
 
                 off += n;
@@ -60,7 +89,7 @@ namespace CSServer
         }
 
         // 패킷 분석해서 상대방으로 보내는 것 까지 
-        private async Task PacketRelayLoop(string tag, NetworkStream stream, NetworkStream dstStream)
+        private async Task PacketRelayLoop(string tag, NetworkStream stream, NetworkStream dstStream, CancellationToken ct)
         {
             // 1) 헤더 9바이트
             byte[] header = new byte[9];
@@ -68,33 +97,28 @@ namespace CSServer
             {
                 while (true)
                 {
-                    await ReadExactlyAsync(stream, header, 9);
+                    await ReadExactlyAsync(stream, header, 9, ct);
 
                     // 2) 파싱 (바이너리 데이터 파싱, 빅엔디안->리틀엔디안으로 변경 )
                     int msgType = header[0];
                     uint bodyLen = BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(1, 4));
-                    // 바디 상한 + 안전 캐스팅, 이것도 자꾸 강요해서 주석으로 일단 넣음. 
-                    //const int MaxBodyLen = 10 * 1024 * 1024;
-                    //if (bodyLen > MaxBodyLen) throw new InvalidDataException("Body too large");
                     int bodySize = checked((int)bodyLen);
                     uint imgId = BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(5, 4));
                     Console.WriteLine($"[ReceiveOnePacketAsync] msgType={msgType}, bodyLen={bodyLen}, imgId={imgId}");
 
                     byte[] body = bodySize == 0 ? Array.Empty<byte>() : new byte[bodySize];
                     if (bodySize > 0)
-                        await ReadExactlyAsync(stream, body, bodySize);
+                        await ReadExactlyAsync(stream, body, bodySize, ct);
 
                     // 3) msgType에 따른 분기처리
                     switch ((MsgType)msgType) // 메시지 열거형으로 캐스팅 후 분기
                     {
                         case MsgType.Image:
                             Console.WriteLine($"{tag} type={msgType} len={bodyLen} id={imgId}");
-                        
-                            // await SendToDestinationAsync(dstStream, header, body);
-                            // 파일로 서버 컴퓨터에 저장 
+     
 
                             // 1) 목적지로 그대로 중계
-                            await SendToDestinationAsync(dstStream, header, body);
+                            await SendToDestinationAsync(dstStream, header, body, ct);
 
                             // 2) 디스크에 저장 (폴더 자동 생성)
                             try
@@ -123,7 +147,7 @@ namespace CSServer
                         case MsgType.Result:
                             Console.WriteLine($"{tag} type={msgType} len={bodyLen} id={imgId}");
                             // C++ 클라로 패킷 중계 
-                            await SendToDestinationAsync(dstStream, header, body);
+                            await SendToDestinationAsync(dstStream, header, body, ct);
                             // Py 서버로 잘 받았다 보내기 
                             await SendAckAsync(stream, MsgType.ResultReceive, imgId);
                             // DB에 결과 업데이트
@@ -149,7 +173,7 @@ namespace CSServer
                         default:
                             Console.WriteLine($"{tag} type={msgType} len={bodyLen} id={imgId}");
                             // 분류되지 않은 MSGTYPE 도 일단 목적지까지 전달은 함. 
-                            await SendToDestinationAsync(dstStream, header, body);
+                            await SendToDestinationAsync(dstStream, header, body, ct);
                             break;
 
                     }
@@ -191,7 +215,7 @@ namespace CSServer
 
 
         // 목적지로 중계 
-        static async Task SendToDestinationAsync(NetworkStream dstStream, byte[] header, byte[] body)
+        static async Task SendToDestinationAsync(NetworkStream dstStream, byte[] header, byte[] body, CancellationToken ct)
         {
             // 예외처리 헤더가 9바이트인지 확인 
             if (header == null || header.Length != 9)
@@ -202,7 +226,8 @@ namespace CSServer
             if (body.Length > 0)
                 Buffer.BlockCopy(body, 0, packet, 9, body.Length);
             Console.WriteLine("서버로 패킷 전송 시도");
-            await dstStream.WriteAsync(packet, 0, packet.Length);
+            await dstStream.WriteAsync(packet.AsMemory(), ct);
+
         }
 
         // 응답 보내기 함수

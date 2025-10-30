@@ -28,26 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            btnAcceptClient = new System.Windows.Forms.Button();
             logBox = new System.Windows.Forms.RichTextBox();
             SuspendLayout();
             // 
-            // btnAcceptClient
-            // 
-            btnAcceptClient.Location = new System.Drawing.Point(27, 36);
-            btnAcceptClient.Name = "btnAcceptClient";
-            btnAcceptClient.Size = new System.Drawing.Size(113, 23);
-            btnAcceptClient.TabIndex = 0;
-            btnAcceptClient.Text = "Server Open";
-            btnAcceptClient.UseVisualStyleBackColor = true;
-            btnAcceptClient.Click += btnAcceptClient_Click;
-            // 
             // logBox
             // 
-            logBox.Location = new System.Drawing.Point(27, 84);
+            logBox.Location = new System.Drawing.Point(27, 34);
             logBox.Name = "logBox";
             logBox.ReadOnly = true;
-            logBox.Size = new System.Drawing.Size(745, 338);
+            logBox.Size = new System.Drawing.Size(745, 388);
             logBox.TabIndex = 1;
             logBox.Text = "";
             logBox.WordWrap = false;
@@ -58,15 +47,14 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(800, 450);
             Controls.Add(logBox);
-            Controls.Add(btnAcceptClient);
             Name = "CSServerForm";
             Text = "CanSCan CSServer";
+            //FormClosing += CSServerForm_FormClosing;
+            //Shown += CSServerForm_Shown;
             ResumeLayout(false);
         }
 
         #endregion
-
-        private System.Windows.Forms.Button btnAcceptClient;
         private System.Windows.Forms.RichTextBox logBox;
     }
 }
