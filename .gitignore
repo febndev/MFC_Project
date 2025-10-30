@@ -1,4 +1,9 @@
 # ===== Visual Studio (IDE) =====
+# =========================
+# Visual Studio / C# WinForms 기본 .gitignore
+# =========================
+
+# VS 로컬 캐시/사용자 설정
 .vs/
 *.suo
 *.user
@@ -55,6 +60,34 @@ TestResults/
 *.trx
 
 # ===== NuGet (optional) =====
+*.DotSettings.user
+
+# 빌드 산출물
+[Bb]in/
+[Oo]bj/
+[Bb]ld/
+[Ll]og/
+[Dd]ebug*/
+[Rr]elease*/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# 테스트 결과
+[Tt]est[Rr]esult*/
+[Tt]est[Rr]esults/
+*.trx
+*.coverage
+*.coveragexml
+
+# 퍼블리시/ClickOnce
+publish/
+PublishProfiles/
+*.pubxml
+*.pubxml.user
+
+# NuGet
 packages/
 !packages/build/
 !packages/repositories.config
@@ -68,3 +101,40 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 *.swp
+*.snupkg
+.nuget/packages/
+
+# 데이터베이스(로컬 개발용)
+*.mdf
+*.ldf
+*.ndf
+*.dbmdl
+*.jfm
+
+# 로그/프로파일링
+*.svclog
+*.etl
+*.diagsession
+*.psess
+*.vsp
+*.vspx
+
+# 기타 IDE
+.vscode/
+.idea/
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# Windows/OS 잡동사니
+[Tt]humbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# UWP/스토어 패키지(사용 시)
+AppPackages/
+*.appx
+*.appxbundle
+*.appxupload
+*.msix
+*.msixbundle
+*.msixupload
