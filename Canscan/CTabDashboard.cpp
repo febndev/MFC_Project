@@ -66,9 +66,9 @@ void CTabDashboard::OnBnClickedBtnInspection()
         return;
     }
 
-    // PNG로 인코딩 후 서버 전송
+    // jpg로 인코딩 후 서버 전송
     std::vector<uint8_t> buffer;
-    cv::imencode(".png", frame, buffer);
+    cv::imencode(".jpg", frame, buffer);
 
     pMain->GetPacket().Send(MsgType::IMG_REQ, buffer);
     AfxMessageBox(L"검사 요청(이미지) 전송 완료!");

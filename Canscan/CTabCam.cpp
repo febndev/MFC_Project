@@ -40,10 +40,10 @@ BOOL CTabCam::OnInitDialog()
     m_pParentDlg = dynamic_cast<CCanscanDlg*>(p2);
 
     m_ListCam.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-    m_ListCam.InsertColumn(0, _T("번호"), LVCFMT_CENTER, 40);
-    m_ListCam.InsertColumn(1, _T("모델명"), LVCFMT_LEFT, 120);
-    m_ListCam.InsertColumn(2, _T("시리얼"), LVCFMT_CENTER, 100);
-    m_ListCam.InsertColumn(3, _T("상태"), LVCFMT_CENTER, 100);
+    m_ListCam.InsertColumn(0, _T("번호"), LVCFMT_CENTER, 80);
+    m_ListCam.InsertColumn(1, _T("모델명"), LVCFMT_LEFT, 180);
+    m_ListCam.InsertColumn(2, _T("시리얼"), LVCFMT_CENTER, 150);
+    m_ListCam.InsertColumn(3, _T("상태"), LVCFMT_CENTER, 150);
 
     // ★ 초기 상태/ FPS 표시
     UpdateInfoLabel(false);              // "카메라 종료됨"
