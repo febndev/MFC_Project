@@ -13,6 +13,11 @@ namespace CSServer
         public CSServerForm()
         {
             InitializeComponent();
+
+            // 콘솔 출력 경로를 logBox로 변경
+            Console.SetOut(new RichTextBoxWriter(logBox));
+            Console.SetError(new RichTextBoxWriter(logBox)); // 오류도 같이 보려면 선택
+
             mServer = new Server();
             pyClient = new ClientToPyServer();
         }

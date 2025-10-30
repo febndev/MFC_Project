@@ -29,6 +29,7 @@ namespace CSServer
                 Password = "1234",
                 SslMode = MySqlSslMode.Disabled,
             };
+            Console.WriteLine($"[DB] 연결 문자열: {dbInfo.ConnectionString}");
             return new Db(dbInfo.ConnectionString);
         }
 

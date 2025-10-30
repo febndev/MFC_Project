@@ -35,7 +35,7 @@ namespace CSServer
                 var cppToPy = PacketRelayLoop("Cpp to Py", cppStream, pyStream);
                 var pyToCpp = PacketRelayLoop("Py to Cpp", pyStream, cppStream);
 
-                // 한쪽 종료/에러 감지만 함. 자꾸 넣으라고 강요해서 일단 주석으로 넣음.
+                // 한쪽 종료/에러 감지만 함.
                 //await Task.WhenAny(cppToPy, pyToCpp);
             }
             catch (Exception ex)
@@ -84,21 +84,6 @@ namespace CSServer
                     if (bodySize > 0)
                         await ReadExactlyAsync(stream, body, bodySize);
 
-                    /* 이렇게 썼는데 밑에 switch문에서 body가 null일 수 있다면서 에러떠서 위처럼 선언과 동시에 삼항연산으로
-                     조건따져서 초기화까지 하는 코드로 바꿈. 
-                    byte[] body;
-                    if (bodySize > 0)
-                    {
-                        body = new byte[bodySize];
-                        await ReadExactlyAsync(stream, body, bodySize);
-
-                    }
-                    else if(bodySize >0)
-                    {
-                        Array.Empty<byte>();
-                    }
-                    */
-
                     // 3) msgType에 따른 분기처리
                     switch ((MsgType)msgType) // 메시지 열거형으로 캐스팅 후 분기
                     {
@@ -116,7 +101,7 @@ namespace CSServer
                             {   // 이미지 저장 로직 , 경로생성 
                                 var dir = Path.Combine(AppContext.BaseDirectory, "recv_img");
                                 Directory.CreateDirectory(dir); // 없으면 생성
-                                var ext = ".png";               // JPG/PNG라면 ".jpg" 또는 ".png"로 바꿔도 됨, 원래는 ".bin"
+                                var ext = ".jpg";               // JPG/PNG라면 ".jpg" 또는 ".png"로 바꿔도 됨, 원래는 ".bin"
                                 var path = Path.Combine(dir, $"{imgId}_{DateTime.Now:yyyyMMdd_HHmmssfff}{ext}");
 
                                 await File.WriteAllBytesAsync(path, body);
@@ -146,6 +131,7 @@ namespace CSServer
                             int intBody = body[0];
                             bool result = false;
                             if (intBody == 0)
+
                             {
                                 result = true;
                             }
@@ -167,9 +153,6 @@ namespace CSServer
                             break;
 
                     }
-
-
-
                 }
             }
             // 예외처리 
