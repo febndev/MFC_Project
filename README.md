@@ -42,3 +42,15 @@
 - ClientToPyServer.cs 내 멤버변수 _pyServerIPAddress , _pyServerPort 값 확인
 ## 3. C# 서버 포트정보 확인 
 - Server.cs 내 StartServerListeningAsync 메서드 확인 port 값과 서버 실행할 컴퓨터의 IP주소를 C++클라이언트에 알려주기
+
+# AI서버 가상환경 설정 순서
+## 가상 환경 설정
+Ctrl+Comma(,) -> 
+Python -> 
+인터프리터(Interpreter) -> 
+인터프리터 추가(Add Interpreter) ->
+로컬 인터프리터 추가... ->
+[환경:새로 생성 / 타입:Virtualenv / 기본 Python:Python 3.13.5 / 위치:현재 파일 위치]
+
+## opencv 설치
+가상환경 터미널창 입력:pip install numpy opencv-python ultralytics torch
