@@ -3,6 +3,7 @@ import struct
 import numpy as np
 import cv2
 from ultralytics import YOLO
+import os
 
 # 서버 상태
 clients = set()
@@ -10,8 +11,8 @@ last_result = {}
 
 # 1. AI 모델 로드
 try:
-    MODEL = YOLO('best.pt')
-    print("[AI 모델 로드 완료] best.pt")
+    MODEL = YOLO('last.pt')
+    print("[AI 모델 로드 완료] last.pt")
 except Exception as e:
     print(f"[ AI 모델 로드 오류] {e}")
     MODEL = None
@@ -24,38 +25,61 @@ async def send_message(writer, ty: int, canid: int, body: bytes):
     print(f"[송신] Type {ty}, ID {canid}, BodyLen {len(body)}")
 
 # 3. AI 추론 함수
+# 3. AI 추론 함수 (라벨 이미지 저장 포함)
 def run_ai_inference(img, canid: int) -> int:
     if MODEL is None:
         print("[오류] AI 모델 미로드, Fail 처리")
         return 1
 
-    results = MODEL(img, conf=0.25, iou=0.7)
+    results = MODEL(img, conf=0.7, iou=0.7)
     detected = False
     result = 1
+
+    # 결과 이미지 복사
+    labeled_img = img.copy()
 
     for r in results:
         for box in r.boxes:
             cls_id = int(box.cls[0])
+            conf = float(box.conf[0])
             detected = True
 
+            # PASS/FAIL 판단
             if cls_id == 1:
-                result = 0  # 클래스 1이면 PASS
-                print(f"[AI 추론] ID {canid}: 클래스 {cls_id}(정상) 검출 → PASS")
-                break
-
+                result = 0
+                print(f"[AI 추론] ID {canid}: 클래스 {cls_id}(정상) → PASS, 확률={conf:.2f}")
             elif cls_id == 0:
-                result = 1  # 클래스 0이면 FAIL
-                print(f"[AI 추론] ID {canid}: 클래스 {cls_id}(불량) 검출 → FAIL")
-                break
+                result = 1
+                print(f"[AI 추론] ID {canid}: 클래스 {cls_id}(불량) → FAIL, 확률={conf:.2f}")
+
+            # 박스 그리기
+            x1, y1, x2, y2 = map(int, box.xyxy[0])
+            color = (0, 255, 0) if cls_id == 1 else (0, 0, 255)
+            label_text = f"{'PASS' if cls_id == 1 else 'FAIL'}({cls_id}) {conf:.2f}"
+            cv2.rectangle(labeled_img, (x1, y1), (x2, y2), color, 2)
+            cv2.putText(labeled_img, label_text, (x1, y1 - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
 
         if detected:
             break
 
+    # 탐지 없으면 전체 이미지에 FAIL 표시
     if not detected:
         print(f"[AI 추론] ID {canid}: 검출 없음 → FAIL")
+        cv2.putText(labeled_img, "FAIL (No Detection)", (10, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
 
+    # 이미지 저장
+    save_dir = "saved_images"
+    os.makedirs(save_dir, exist_ok=True)
+    save_path = f"{save_dir}/{canid}_{result}.jpg"
+    cv2.imwrite(save_path, labeled_img)
+    print(f"[이미지 저장] {save_path}")
+
+    # 결과 저장
     last_result[canid] = result
     return result
+
 
 # 4. Type1 처리: 이미지 수신
 async def handle_type1(reader, writer, canid: int, body: bytes):
@@ -80,19 +104,23 @@ async def handle_type3(writer, canid: int):
     await send_message(writer, ty=3, canid=canid, body=struct.pack('B', result))
     print(f"[결과 전송] ID {canid}, 결과={result}")
 
-# 6. Type4 처리: 클라이언트 확인 결과
 async def handle_type4(writer, canid: int, body: bytes):
-    if len(body) != 1:
-        print(f"[오류] Type4 바디 길이 오류: {len(body)}")
+    # body가 비어 있어도 수신 확인으로 간주
+    if len(body) == 0:
+        print(f"[클라이언트 확인] ID {canid}, 헤더만 수신 → 정상 수신 확인")
         return
 
-    client_result = struct.unpack('B', body)[0]
-    print(f"[클라이언트 확인] ID {canid}, 결과={client_result}")
+    # body가 1바이트 있을 경우는 이전 로직 그대로 유지
+    if len(body) == 1:
+        client_result = struct.unpack('B', body)[0]
+        print(f"[클라이언트 확인] ID {canid}, 결과={client_result}")
 
-    # 실패면 동일 이미지 재전송
-    if client_result == 1:
-        print(f"[재전송 요청] ID {canid}, Type3 재실행")
-        await handle_type3(writer, canid)
+        # 실패면 동일 이미지 재전송
+        if client_result == 1:
+            print(f"[재전송 요청] ID {canid}, Type3 재실행")
+            await handle_type3(writer, canid)
+    else:
+        print(f"[경고] Type4 데이터 이상: 길이={len(body)}")
 
 # 7. 클라이언트 처리
 async def handle_client(reader, writer):
