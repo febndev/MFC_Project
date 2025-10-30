@@ -24,12 +24,13 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 public:
-    afx_msg void OnBnClickedBtnSerch();
-    afx_msg void OnBnClickedBtnOpen();
-    afx_msg void OnBnClickedBtnClose();
-    afx_msg void OnBnClickedBtnConnect();
-    afx_msg void OnListSelChanged(NMHDR* pNMHDR, LRESULT* pResult);
-    afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnBnClickedBtnSerch();     // 카메라 검색
+	afx_msg void OnBnClickedBtnOpen();      // 카메라 열기
+	afx_msg void OnBnClickedBtnClose();     // 카메라 닫기
+	afx_msg void OnBnClickedBtnConnect();   // 카메라 시작/중지
+	afx_msg void OnListSelChanged(NMHDR* pNMHDR, LRESULT* pResult); // 리스트 선택 변경
+	afx_msg void OnTimer(UINT_PTR nIDEvent);        // FPS 타이머
+	afx_msg void OnDestroy();                       // 리소스 해제
 
     CListCtrl m_ListCam;
 

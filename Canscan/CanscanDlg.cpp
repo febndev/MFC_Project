@@ -25,13 +25,24 @@ CCanscanDlg::CCanscanDlg(CWnd* pParent)
 {
     m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
+
+// 대화 상자 소멸 시 처리
 void CCanscanDlg::OnDestroy()
 {
     CDialogEx::OnDestroy();
 
+    // 1) 수신 루프 중단 요청
+    m_stop = true;
+
+    // 2) Receive 깨워서 빠르게 빠져나오게
     if (m_isConnected) {
         m_packet.Disconnect();
         m_isConnected = false;
+    }
+
+    // 3) 스레드 합류
+    if (m_recvThread.joinable()) {
+        m_recvThread.join();
     }
 }
 
@@ -89,6 +100,7 @@ BOOL CCanscanDlg::OnInitDialog()
         if (pic && hBmp) pic->SetBitmap(hBmp);
     }
 
+	// ===== 네트워크 연결 =====
     if (m_packet.Connect("10.10.21.101", 7000)) {
         m_isConnected = true;
         AfxMessageBox(L"서버 연결 성공");
@@ -99,6 +111,7 @@ BOOL CCanscanDlg::OnInitDialog()
     }
 
     // ===================== 수신 스레드 =====================
+    m_stop = false;
     std::thread([this] {
         MsgType type;
         uint32_t imgId;
@@ -119,6 +132,7 @@ BOOL CCanscanDlg::OnInitDialog()
                     waitingForImgRes = false;
                     break;
 
+					//  2) RESULT_REQ 처리
                 case MsgType::RESULT_REQ:
                 {
                     if (!body.empty()) {
@@ -134,6 +148,21 @@ BOOL CCanscanDlg::OnInitDialog()
                     }
                     else {
                         std::cout << "[RECV][RESULT_REQ] Body가 비어 있음!" << std::endl;
+                    }
+
+					// 1) UI에 결과 표시
+                    int code = -1; // 기본 UNKNOWN
+                    if (!body.empty()) {
+                        const uint8_t v = body[0];
+
+                        // 이진 0/1 또는 문자 '0'/'1' 모두 대응
+                        if (v == 0 || v == '0')      code = 0;  // PASS
+                        else if (v == 1 || v == '1') code = 1;  // FAIL
+                    }
+                   
+                    // UI 스레드로 결과 전달 (종료 중이면 보내지 않음)
+                    if (!m_stop && ::IsWindow(m_tabDashboard.GetSafeHwnd())) {
+                        m_tabDashboard.PostMessage(WM_UPDATE_RESULT_TEXT, static_cast<WPARAM>(code), 0);
                     }
 
                     // 2) 잘 받았다고 응답 (RESULT_RES)
@@ -175,6 +204,7 @@ BOOL CCanscanDlg::OnInitDialog()
     return TRUE;
 }
 
+// 시스템 명령 처리기
 void CCanscanDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
     if ((nID & 0xFFF0) == IDM_ABOUTBOX) {
@@ -185,6 +215,7 @@ void CCanscanDlg::OnSysCommand(UINT nID, LPARAM lParam)
     }
 }
 
+// 대화 상자에 대한 그리기 처리기
 void CCanscanDlg::OnPaint()
 {
     if (IsIconic())
@@ -206,12 +237,13 @@ void CCanscanDlg::OnPaint()
     }
 }
 
+// 드래그할 때 커서 반환
 HCURSOR CCanscanDlg::OnQueryDragIcon()
 {
     return static_cast<HCURSOR>(m_hIcon);
 }
 
-// ===== 탭 =====
+// ===== 탭 컨트롤 초기화 =====
 void CCanscanDlg::InitTabControl()
 {
     // 탭 추가
@@ -232,6 +264,7 @@ void CCanscanDlg::InitTabControl()
     ShowTab(0);
 }
 
+// 특정 탭 표시
 void CCanscanDlg::ShowTab(int nTab)
 {
     m_tabDashboard.ShowWindow(SW_HIDE);
@@ -264,6 +297,7 @@ void CCanscanDlg::UpdateFrame(const cv::Mat& frame)
     if (pic && hBmp) pic->SetBitmap(hBmp);
 }
 
+// OpenCV Mat → HBITMAP 변환
 HBITMAP CCanscanDlg::MatToHBITMAP(const cv::Mat& mat)
 {
     if (mat.empty()) return nullptr;
