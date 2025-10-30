@@ -27,7 +27,8 @@
 
 # CPPClient 빌드시 사전 점검 사항
 ## 1. 환경변수 설정(openCV)
-### : Windows 검색 -> 시스템 환경 변수 편집 -> 고급 -> 환경 변수 -> 시스템 변수 -> 새로 만들기 -> 변수 이름 : OPEN_CV / 변수 값 : C:\Users\mmmz\Downloads\opencv\build -> 확인
+### : Windows 검색 -> 시스템 환경 변수 편집 -> 고급 -> 환경 변수 -> 시스템 변수 -> 새로 만들기 -> 변수 이름 : OPEN_CV / 변수 값 : C:\Users\mmmz\Downloads\opencv\build(본인 경로에 맞춰 설정, 단 opencv\build 까지 일치해야 함) -> 확인
+### : Windows 검색 -> 시스템 환경 변수 편집 -> 고급 -> 환경 변수 -> 시스템 변수 -> Path(변수) 더블클릭 ->  새로 만들기 -> C:\Users\mmmz\Downloads\opencv\build\x64\vc16\bin(본인 경로에 맞춰 설정, 단 vc16\bin 까지 일치해야 함) -> 확인
 ## 2. VisulStudio 경로 설정
 ### : 프로젝트 -> 속성 -> C/C++ -> 일반 -> 추가 포함 디렉터리 : $(PYLON_DEV_DIR)\include;%OPEN_CV%\include\opencv2;%OPEN_CV%\include;%(AdditionalIncludeDirectories)
 ### : 프로젝트 -> 속성 -> 링커 -> 일반 -> 추가 라이브러리 디렉터리 : $(PYLON_DEV_DIR)\lib\x64;%OPEN_CV%\x64\vc16\lib;%(AdditionalLibraryDirectories)
